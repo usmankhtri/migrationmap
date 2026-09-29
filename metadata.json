@@ -1,0 +1,6 @@
+{
+  "name": "MigrationMap",
+  "description": "Map, validate, and ship website redirects without expensive SEO software. Deterministic URL matching, redirect loop detection, and multi-format configuration export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

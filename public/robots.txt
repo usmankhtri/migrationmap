@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Allow: /docs
+Allow: /about
+Allow: /privacy
+Disallow: /app
+
+Sitemap: https://migrationmap.dev/sitemap.xml
