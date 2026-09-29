@@ -1,212 +1,143 @@
-# MigrationMap 🗺️⚡
+# MigrationMap
 
-> **"Map, validate, and ship website redirects without expensive SEO software."**
+> Free URL migration and redirect mapping tool for website migrations.
 
-MigrationMap is a free, privacy-first website migration assistant for developers, SEO professionals, agencies, freelancers, and website owners. It pairs legacy URLs to modern destinations using deterministic string and semantic heuristics, validates your redirect topology for loops and chains, and exports production-ready redirect rules for **Next.js, Vercel, Netlify, Apache, and Nginx**.
+MigrationMap helps developers, SEO professionals, freelancers, and agencies map URLs from an existing website to a new website, review suggested redirects, identify common migration issues, and export redirect configurations for popular platforms.
 
----
-
-## 🌟 Key Features
-
-- **⚡ Deterministic Multi-Signal Matching:** Evaluates 11 distinct mathematical heuristics (exact path, slug similarity, path segment alignment, Jaccard keyword overlap, numeric entity ID preservation, hierarchy depth, legacy extension drops) with zero probabilistic hallucinations.
-- **🛡️ Migration Health & Redirect Doctor:** Directed-graph cycle analysis detects:
-  - Potential redirect loops (`/a → /b` and `/b → /a`)
-  - Redirect chains (`A → B → C`)
-  - Self-redirects (`/a → /a`)
-  - High fan-in soft-404 risks
-  - Unmapped orphan URLs
-  - Trailing slash & protocol inconsistencies
-- **🔒 100% Client-Side Privacy:** All CSV, TXT, and XML Sitemap parsing runs exclusively in your browser. Unreleased staging URLs and client catalogs are never uploaded to remote servers or third-party AI models.
-- **📦 Multi-Format Redirect Exporters:**
-  1. **Next.js:** `async redirects()` configuration for `next.config.js`
-  2. **Vercel:** `vercel.json` edge redirect payload
-  3. **Netlify:** `_redirects` file syntax with status overrides
-  4. **Apache:** `.htaccess` `mod_rewrite` RewriteRule directives
-  5. **Nginx:** `location = /old { return 301 /new; }` server blocks
-  6. **CSV:** Spreadsheet export with formula injection escaping
-  7. **JSON:** Machine-readable redirect schema
-  8. **Markdown:** Executive migration report with tables & stats
+The goal is simple: make URL migration work easier without requiring an expensive SEO platform.
 
 ---
 
-## 📸 Screenshots
+## Overview
 
-*(Dashboard, Review Table, Issue Detector, and Rule Exporter views)*
+A website migration can involve hundreds or thousands of URLs.
 
-```
-+-----------------------------------------------------------------------------------+
-|  MigrationMap                                 [Overview] [Mappings] [Issues] [Exports] |
-+-----------------------------------------------------------------------------------+
-|  [ Total Old: 1,248 ]  [ New: 1,190 ]  [ Approved: 982 ]  [ Issues: 3 Loops ]      |
-|                                                                                   |
-|  Mapping Coverage: [████████████████████░░░░] 84%                                 |
-|                                                                                   |
-|  Review Table:                                                                    |
-|  OLD URL                     NEW URL                 CONFIDENCE   REASON          |
-|  /products/iphone-case       /shop/iphone-case       98% [High]   Slug + Keywords |
-|  /blog/seo-guide             /resources/seo-guide    94% [High]   Directory Shift |
-|  /categories/mens.html       /collections/mens       91% [High]   Clean Extension |
-+-----------------------------------------------------------------------------------+
-```
+MigrationMap takes two URL lists:
 
----
+- **Old URLs** — URLs from the existing website
+- **New URLs** — URLs from the new website
 
-## 🔬 Matching Methodology (The 11 Signals)
+It then:
 
-Every old URL is evaluated against candidate destination URLs using an inverted index and a multi-factor deterministic scoring matrix:
+1. Parses and validates the input
+2. Normalizes URLs
+3. Finds potential matches
+4. Calculates a confidence level
+5. Lets you review and edit mappings
+6. Identifies common migration issues
+7. Exports the final redirect rules
 
-1. **Exact Path Match (100%):** Identical character-for-character path equality.
-2. **Exact Slug Match:** Terminal slug comparison after stripping separators.
-3. **Levenshtein Slug Similarity:** Normalized string edit distance across page slugs.
-4. **Path Segment Alignment:** Positional and permutation segment-by-segment alignment.
-5. **Keyword Overlap:** Jaccard similarity index on non-stopword lexical tokens.
-6. **Extension Handling:** Clean detection of legacy drops (`.html`, `.php`, `.aspx`).
-7. **Full Path Similarity:** Global string distance across the entire URI path.
-8. **Hierarchy Depth:** Comparison of directory nesting depth levels.
-9. **Entity ID Match:** Exact preservation of numeric identifiers (e.g. SKU `#1042`).
-10. **Token Normalization:** Punctuation sanitization and percent-decoding.
-11. **Directory Transformations:** Recognizing common directory shifts (`/blog/` → `/resources/`, `/products/` → `/shop/`).
+Everything is designed around a simple workflow:
+
+**Import → Match → Review → Validate → Export**
 
 ---
 
-## 📁 Project Structure
+## Features
 
-```
-├── public/
-│   ├── robots.txt            # Search engine crawling rules
-│   └── sitemap.xml           # XML sitemap for SEO
-├── src/
-│   ├── components/
-│   │   ├── dashboard/
-│   │   │   ├── DashboardOverview.tsx    # Metrics, coverage bar, confidence distribution
-│   │   │   ├── ImportWizard.tsx         # CSV (with column selector), TXT, XML parser
-│   │   │   ├── MappingReviewTable.tsx   # Interactive review, search, bulk actions
-│   │   │   ├── IssueDetectorView.tsx    # Loop, chain, and self-redirect analyzer
-│   │   │   ├── ExportView.tsx           # 8 production export formats & syntax preview
-│   │   │   └── SettingsView.tsx         # Normalization toggles & thresholds
-│   │   └── layout/
-│   │       ├── Navbar.tsx               # Top header, navigation, and theme toggle
-│   │       └── Footer.tsx               # Product links and privacy notice
-│   ├── context/
-│   │   ├── MigrationContext.tsx         # State management & analysis pipeline
-│   │   └── ThemeContext.tsx             # Dark/light mode theme management
-│   ├── engine/
-│   │   ├── matcher.ts                   # Inverted index, 11-signal scorer, explanation builder
-│   │   ├── validator.ts                 # Directed graph cycle & chain detection engine
-│   │   └── exporters.ts                 # Next.js, Vercel, Netlify, Apache, Nginx generators
-│   ├── pages/
-│   │   ├── LandingPage.tsx              # SEO landing page with hero and feature sections
-│   │   ├── AppDashboardPage.tsx         # Tabbed migration workspace
-│   │   ├── DocsPage.tsx                 # Technical guide & HTTP redirect reference
-│   │   ├── AboutPage.tsx                # Product philosophy & mission
-│   │   └── PrivacyPage.tsx              # Browser architecture & client-side boundaries
-│   ├── test/
-│   │   └── pipeline.test.ts             # 34-check automated pipeline test suite
-│   ├── types/
-│   │   └── migration.ts                 # Strict TypeScript data models
-│   ├── utils/
-│   │   ├── url.ts                       # URL normalization, parsing, slug extraction
-│   │   ├── parsers.ts                   # CSV, TXT, XML Sitemap parsers & invalid row detector
-│   │   ├── storage.ts                   # IndexedDB persistent storage engine
-│   │   └── seo.ts                       # Route metadata, OpenGraph & JSON-LD
-│   ├── App.tsx                          # Client-side router & layout container
-│   ├── index.css                        # Tailwind CSS styling & custom scrollbars
-│   └── main.tsx                         # React 19 entry point
-├── index.html                           # SEO meta tags, OpenGraph, Favicon SVG
-├── metadata.json                        # App manifest & capabilities
-├── package.json                         # Dependencies & build scripts
-├── tsconfig.json                        # Strict TypeScript configuration
-└── vite.config.ts                       # Vite bundler & Tailwind v4 plugin
-```
+### URL Import
 
----
+Import URL lists from:
 
-## ⚙️ Environment Variables
+- CSV
+- TXT
+- XML sitemaps
+- Pasted URLs
 
-Copy `.env.example` to `.env.local` if custom configuration is required:
+The importer handles common formatting issues and reports invalid rows instead of silently dropping them.
 
-```bash
-cp .env.example .env.local
-```
+### URL Matching
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `APP_URL` | No | Current host | Dynamic host URL used in hosted cloud environments. |
+MigrationMap uses deterministic URL and text-based signals to find likely destinations.
 
----
+Matching can consider factors such as:
 
-## 🚀 Getting Started
+- Exact path matches
+- Slug similarity
+- Path segment similarity
+- Token similarity
+- Keyword overlap
+- URL depth
+- File extension changes
+- Numeric identifiers
+- Path transformations
+- Overall path similarity
 
-### Prerequisites
+Each suggestion includes a confidence level and an explanation so that users can review the result rather than blindly trusting an automatic match.
 
-- Node.js 18+ or 20+
-- npm, pnpm, or yarn
+### Mapping Review
 
-### Installation
+Review and manage mappings in one place.
 
-```bash
-# Clone the repository
-git clone https://github.com/your-username/migrationmap.git
+You can:
 
-# Navigate to project directory
-cd migrationmap
+- Approve mappings
+- Reject mappings
+- Edit destinations
+- Search URLs
+- Filter results
+- Sort mappings
+- Perform bulk actions
+- Review low-confidence matches
 
-# Install dependencies
-npm install
+### Migration Checks
 
-# Start local development server
-npm run dev
-```
+MigrationMap identifies common problems such as:
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+- Unmapped old URLs
+- Duplicate source URLs
+- Duplicate destinations
+- Self redirects
+- Potential redirect loops
+- Potential redirect chains
+- Low-confidence mappings
+- Invalid destinations
+- URL normalization inconsistencies
+
+These checks are intended to support human review before a migration goes live.
+
+### Redirect Exports
+
+Export reviewed mappings in formats commonly used by developers and hosting platforms:
+
+- CSV
+- JSON
+- Markdown
+- Next.js
+- Vercel
+- Netlify
+- Apache
+- Nginx
+
+Exports can be previewed and copied before downloading.
+
+### Local-First Data
+
+MigrationMap is designed around browser-local processing and storage.
+
+Your migration workspace is kept on the local device rather than being stored in a cloud database by the application.
+
+Because browser storage has practical size limits, very large projects should be backed up using the project's export functionality.
 
 ---
 
-## 🛠️ Build & Verification
+## Why MigrationMap?
 
-```bash
-# Typecheck codebase
-npm run lint
+Most website migration workflows involve a combination of spreadsheets, SEO crawlers, scripts, and manual review.
 
-# Run automated end-to-end pipeline test suite (34 tests)
-npm test
+MigrationMap brings the core redirect-mapping workflow into one focused tool:
 
-# Build for production
-npm run build
-
-# Preview production build locally
-npm run preview
-```
-
----
-
-## 🚢 Deploying to Vercel
-
-MigrationMap is ready for zero-config Vercel deployment:
-
-1. Push your repository to GitHub, GitLab, or Bitbucket.
-2. Import the project in the [Vercel Dashboard](https://vercel.com/new).
-3. Framework Preset: **Vite** (or Other).
-4. Build Command: `npm run build`
-5. Output Directory: `dist`
-6. Click **Deploy**.
-
----
-
-## ⚠️ Important Limitations
-
-- **Structural URL Analysis vs. Live Server Verification:** MigrationMap performs deterministic structural analysis on provided URL datasets. It does not issue unauthenticated bulk HTTP network probes to external production servers. Always verify generated redirect configurations on a staging or preview domain prior to DNS cutover.
-
----
-
-## 🗺️ Roadmap
-
-- [ ] Automated regex rule clustering for identical path pattern collapses (e.g. `/author/(.*)` → `/team/$1`).
-- [ ] Direct sitemap fetching via user-provided CORS proxies.
-- [ ] Export to Cloudflare Workers and Fastly VCL snippets.
-
----
-
-## 📄 License
-
-MIT License. Free for developers, agencies, SEO consultants, and enterprise teams.
+```text
+Old URLs
+   ↓
+Import & Validate
+   ↓
+Normalize
+   ↓
+Match
+   ↓
+Review
+   ↓
+Migration Checks
+   ↓
+Export
