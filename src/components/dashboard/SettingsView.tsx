@@ -98,8 +98,8 @@ export const SettingsView: React.FC = () => {
       )}
 
       {/* Local Storage & Privacy Notice */}
-      <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 sm:p-5 space-y-3 text-xs">
-        <div className="flex items-center gap-2 font-medium text-neutral-900 dark:text-neutral-100">
+      <div className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-4 sm:p-5 space-y-3 text-xs shadow-xs">
+        <div className="flex items-center gap-2 font-medium text-neutral-900 dark:text-white">
           <HardDrive className="h-4 w-4" />
           <span>Local browser storage</span>
         </div>
@@ -111,17 +111,17 @@ export const SettingsView: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-[11px] text-neutral-600 dark:text-neutral-400">
           <span>Storage status:</span>
           {storageStatus === 'saved' && (
-            <span className="rounded bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-neutral-800 dark:text-neutral-200 font-medium">
+            <span className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-emerald-600 dark:text-emerald-400 font-medium">
               Saved locally in browser IndexedDB
             </span>
           )}
           {storageStatus === 'oversized' && (
-            <span className="rounded border border-neutral-300 dark:border-neutral-700 px-2 py-0.5 text-neutral-800 dark:text-neutral-200 font-medium">
+            <span className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-amber-600 dark:text-amber-400 font-medium">
               Large dataset active in memory
             </span>
           )}
           {storageStatus === 'corrupted' && (
-            <span className="rounded bg-neutral-200 dark:bg-neutral-800 px-2 py-0.5 text-neutral-800 dark:text-neutral-200 font-medium">
+            <span className="rounded-lg bg-neutral-200 dark:bg-neutral-800 px-2 py-0.5 text-neutral-800 dark:text-neutral-200 font-medium">
               Data reset
             </span>
           )}
@@ -132,9 +132,9 @@ export const SettingsView: React.FC = () => {
       </div>
 
       {/* Project Backup & Restore Card */}
-      <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 sm:p-5 space-y-4">
-        <div className="border-b border-neutral-100 dark:border-neutral-800 pb-2.5">
-          <h3 className="text-xs font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+      <div className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-4 sm:p-5 space-y-4 shadow-xs">
+        <div className="border-b border-neutral-100 dark:border-white/[0.06] pb-2.5">
+          <h3 className="text-xs font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
             <FileCode className="h-4 w-4" />
             Project Backup &amp; Restore
           </h3>
@@ -144,7 +144,7 @@ export const SettingsView: React.FC = () => {
         </div>
 
         {importError && (
-          <div className="rounded border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 p-2.5 text-xs text-red-700 dark:text-red-300">
+          <div className="rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 p-2.5 text-xs text-red-700 dark:text-red-300">
             {importError}
           </div>
         )}
@@ -153,7 +153,7 @@ export const SettingsView: React.FC = () => {
           <button
             onClick={exportProjectBackup}
             disabled={oldUrls.length === 0}
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-4 py-2 text-xs font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors disabled:opacity-40 min-h-[38px]"
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 rounded-lg border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.04] backdrop-blur-md px-4 py-2 text-xs font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-white/[0.08] transition-all disabled:opacity-40 min-h-[38px] active:scale-[0.98]"
           >
             <Download className="h-3.5 w-3.5" />
             Export project backup (JSON)
@@ -161,7 +161,7 @@ export const SettingsView: React.FC = () => {
 
           <button
             onClick={() => backupFileInputRef.current?.click()}
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-4 py-2 text-xs font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors min-h-[38px]"
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 rounded-lg border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.04] backdrop-blur-md px-4 py-2 text-xs font-medium text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-white/[0.08] transition-all min-h-[38px] active:scale-[0.98]"
           >
             <Upload className="h-3.5 w-3.5" />
             Import project backup
@@ -177,9 +177,9 @@ export const SettingsView: React.FC = () => {
       </div>
 
       {/* Normalization Settings Card */}
-      <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 space-y-4">
-        <div className="border-b border-neutral-100 dark:border-neutral-800 pb-2.5">
-          <h3 className="text-xs font-semibold text-neutral-900 dark:text-neutral-100">
+      <div className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-5 space-y-4 shadow-xs">
+        <div className="border-b border-neutral-100 dark:border-white/[0.06] pb-2.5">
+          <h3 className="text-xs font-semibold text-neutral-900 dark:text-white">
             URL Normalization Rules
           </h3>
           <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">

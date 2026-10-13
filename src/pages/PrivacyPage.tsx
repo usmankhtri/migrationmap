@@ -14,14 +14,14 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ onNavigate }) => {
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       {/* Header */}
-      <div className="space-y-2 border-b border-neutral-200 dark:border-neutral-800 pb-6">
+      <div className="space-y-2 border-b border-neutral-200/80 dark:border-white/[0.08] pb-6">
         <button
           onClick={() => onNavigate('/app')}
-          className="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors mb-2"
+          className="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors mb-2"
         >
           <ArrowLeft className="h-3 w-3" /> Back to workspace
         </button>
-        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white">
           Privacy &amp; Local Storage Model
         </h1>
         <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed">
@@ -31,8 +31,8 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ onNavigate }) => {
 
       {/* Core Privacy Facts */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 space-y-1.5">
-          <div className="flex items-center gap-2 font-medium text-xs text-neutral-900 dark:text-neutral-100">
+        <div className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-4 space-y-1.5 shadow-xs">
+          <div className="flex items-center gap-2 font-medium text-xs text-neutral-900 dark:text-white">
             <EyeOff className="h-3.5 w-3.5" />
             Where URL processing occurs
           </div>
@@ -41,18 +41,18 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ onNavigate }) => {
           </p>
         </div>
 
-        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 space-y-1.5">
-          <div className="flex items-center gap-2 font-medium text-xs text-neutral-900 dark:text-neutral-100">
+        <div className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-4 space-y-1.5 shadow-xs">
+          <div className="flex items-center gap-2 font-medium text-xs text-neutral-900 dark:text-white">
             <HardDrive className="h-3.5 w-3.5" />
-            Cookie-based local storage
+            Browser-based local storage
           </div>
           <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
-            Your saved project state is stored in your browser cookies. Clearing this site&apos;s cookies/data will remove your saved project.
+            Your saved project state is stored in your browser local storage. Clearing this site&apos;s data will remove your saved project.
           </p>
         </div>
 
-        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 space-y-1.5">
-          <div className="flex items-center gap-2 font-medium text-xs text-neutral-900 dark:text-neutral-100">
+        <div className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-4 space-y-1.5 shadow-xs">
+          <div className="flex items-center gap-2 font-medium text-xs text-neutral-900 dark:text-white">
             <Lock className="h-3.5 w-3.5" />
             No cloud database
           </div>
@@ -61,8 +61,8 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ onNavigate }) => {
           </p>
         </div>
 
-        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 space-y-1.5">
-          <div className="flex items-center gap-2 font-medium text-xs text-neutral-900 dark:text-neutral-100">
+        <div className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-4 space-y-1.5 shadow-xs">
+          <div className="flex items-center gap-2 font-medium text-xs text-neutral-900 dark:text-white">
             <Lock className="h-3.5 w-3.5" />
             No third-party data sharing
           </div>
@@ -74,12 +74,12 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ onNavigate }) => {
 
       {/* What Data is Stored Locally */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-          What is stored locally in your cookies
+        <h2 className="text-sm font-semibold text-neutral-900 dark:text-white">
+          What is stored locally in your browser
         </h2>
-        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 space-y-2 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        <div className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-5 space-y-2 text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed shadow-xs">
           <p>
-            When you import URLs, the application stores your imported source URLs, destination URLs, generated mappings, review statuses (Approved, Review, Rejected), and normalization preferences in cookie chunks.
+            When you import URLs, the application stores your imported source URLs, destination URLs, generated mappings, review statuses (Approved, Review, Rejected), and normalization preferences.
           </p>
           <p>
             This allows your work to persist when you refresh or revisit the site on the same device and browser.
@@ -89,13 +89,13 @@ export const PrivacyPage: React.FC<PrivacyPageProps> = ({ onNavigate }) => {
 
       {/* Storage and Persistence */}
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+        <h2 className="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
           <AlertCircle className="h-4 w-4" />
           High-capacity local persistence
         </h2>
-        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 space-y-2 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+        <div className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-5 space-y-2 text-xs text-neutral-600 dark:text-neutral-300 leading-relaxed shadow-xs">
           <p>
-            MigrationMap uses browser-level IndexedDB to store your migration project locally, comfortably supporting datasets with 50,000+ URLs and mappings without relying on restrictive cookie storage.
+            MigrationMap uses browser-level IndexedDB to store your migration project locally, comfortably supporting datasets with 50,000+ URLs and mappings without relying on restrictive storage.
           </p>
           <p>
             Your URLs and mapping decisions never leave your browser or device. All calculations, matching, and exports are conducted entirely on the client side.

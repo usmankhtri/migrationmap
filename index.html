@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <title>MigrationMap — Free Website Migration & Redirect Mapping Tool</title>
+    <title>MigrationMap v1.2 — High-Precision Website Migration &amp; Redirect Tool</title>
     <meta name="description" content="Map legacy URLs, detect redirect loops, and export verified rules for Next.js, Vercel, Netlify, Apache, and Nginx. Deterministic matching running locally in your browser." />
     <link rel="canonical" href="https://migrationmap.dev" />
     <meta name="robots" content="index, follow" />
@@ -13,18 +13,18 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://migrationmap.dev" />
-    <meta property="og:title" content="MigrationMap — Free Website Migration & Redirect Mapping Tool" />
+    <meta property="og:title" content="MigrationMap v1.2 — High-Precision Website Migration &amp; Redirect Tool" />
     <meta property="og:description" content="Map legacy URLs, detect redirect loops, and export verified rules for Next.js, Vercel, Netlify, Apache, and Nginx. Deterministic matching running locally in your browser." />
     <meta property="og:site_name" content="MigrationMap" />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="MigrationMap — Free Website Migration & Redirect Mapping Tool" />
+    <meta name="twitter:title" content="MigrationMap v1.2 — High-Precision Website Migration &amp; Redirect Tool" />
     <meta name="twitter:description" content="Map legacy URLs, detect redirect loops, and export verified rules for Next.js, Vercel, Netlify, Apache, and Nginx. Deterministic matching running locally in your browser." />
     
     <!-- Theme & Monochrome Favicon -->
-    <meta name="theme-color" content="#171717" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23171717'/><path d='M9 12h9a3 3 0 0 1 3 3v0a3 3 0 0 1-3 3h-8' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/><path d='M13 15l-3 3 3 3' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/><path d='M18 9l3 3-3 3' stroke='%23a3a3a3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>" />
+    <meta name="theme-color" content="#090a0c" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23090a0c'/><path d='M9 12h9a3 3 0 0 1 3 3v0a3 3 0 0 1-3 3h-8' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/><path d='M13 15l-3 3 3 3' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/><path d='M18 9l3 3-3 3' stroke='%2371717a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>" />
     
     <!-- Fonts: Poppins & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +35,7 @@
       (function() {
         try {
           var saved = localStorage.getItem('migrationmap-theme');
-          var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          var theme = saved || 'dark';
           if (theme === 'dark') {
             document.documentElement.classList.add('dark');
             document.documentElement.style.colorScheme = 'dark';

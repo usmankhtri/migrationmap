@@ -73,7 +73,12 @@ export default function App() {
   return (
     <ThemeProvider>
       <MigrationProvider>
-        <div className="min-h-screen flex flex-col bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 font-sans selection:bg-neutral-900 selection:text-white dark:selection:bg-white dark:selection:text-neutral-900 transition-colors duration-150">
+        <div className="relative min-h-screen flex flex-col bg-[#f8f9fa] text-neutral-900 dark:bg-[#090a0c] dark:text-[#ededed] font-sans selection:bg-neutral-900 selection:text-white dark:selection:bg-white dark:selection:text-neutral-950 transition-colors duration-150">
+          {/* Subtle ambient lighting for frosted glass surfaces */}
+          <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+            <div className="absolute -top-[25%] left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-neutral-200/50 dark:bg-white/[0.03] blur-[120px]" />
+          </div>
+
           <Navbar currentPath={currentPath} onNavigate={navigate} />
 
           <main className="flex-1">

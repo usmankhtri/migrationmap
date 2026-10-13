@@ -249,7 +249,7 @@ export const MappingReviewTable: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 4 Clean Summary Cards (Requirement #10) */}
+      {/* 4 Clean Summary Cards */}
       <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
         {/* Card 1: Mapped */}
         <button
@@ -257,14 +257,14 @@ export const MappingReviewTable: React.FC = () => {
             setStatusFilter(statusFilter === 'mapped' ? 'all' : 'mapped');
             setCurrentPage(1);
           }}
-          className={`rounded-lg border p-3 sm:p-4 text-left transition-colors min-h-[78px] ${
+          className={`rounded-2xl border p-3 sm:p-4 text-left backdrop-blur-xl transition-all duration-200 min-h-[78px] shadow-xs ${
             statusFilter === 'mapped'
-              ? 'border-neutral-900 dark:border-neutral-100 bg-neutral-50 dark:bg-neutral-800/60'
-              : 'border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-700'
+              ? 'border-neutral-900 dark:border-white bg-neutral-100/90 dark:bg-white/[0.12] ring-1 ring-neutral-900/10 dark:ring-white/20'
+              : 'border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 hover:border-neutral-300 dark:hover:border-white/20 hover:bg-white/90 dark:hover:bg-[#111215]/90'
           }`}
         >
           <div className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">Mapped</div>
-          <div className="mt-0.5 sm:mt-1 text-lg sm:text-2xl font-semibold font-mono text-neutral-900 dark:text-neutral-100 truncate">
+          <div className="mt-0.5 sm:mt-1 text-lg sm:text-2xl font-semibold font-mono text-neutral-900 dark:text-white truncate">
             {metrics.mappedCount.toLocaleString()}
           </div>
           <div className="mt-0.5 text-[10px] text-neutral-400 truncate">
@@ -278,14 +278,14 @@ export const MappingReviewTable: React.FC = () => {
             setStatusFilter(statusFilter === 'needs_review' ? 'all' : 'needs_review');
             setCurrentPage(1);
           }}
-          className={`rounded-lg border p-3 sm:p-4 text-left transition-colors min-h-[78px] ${
+          className={`rounded-2xl border p-3 sm:p-4 text-left backdrop-blur-xl transition-all duration-200 min-h-[78px] shadow-xs ${
             statusFilter === 'needs_review'
-              ? 'border-neutral-900 dark:border-neutral-100 bg-neutral-50 dark:bg-neutral-800/60'
-              : 'border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-700'
+              ? 'border-neutral-900 dark:border-white bg-neutral-100/90 dark:bg-white/[0.12] ring-1 ring-neutral-900/10 dark:ring-white/20'
+              : 'border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 hover:border-neutral-300 dark:hover:border-white/20 hover:bg-white/90 dark:hover:bg-[#111215]/90'
           }`}
         >
           <div className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">Needs review</div>
-          <div className="mt-0.5 sm:mt-1 text-lg sm:text-2xl font-semibold font-mono text-neutral-900 dark:text-neutral-100 truncate">
+          <div className="mt-0.5 sm:mt-1 text-lg sm:text-2xl font-semibold font-mono text-neutral-900 dark:text-white truncate">
             {metrics.needsReviewCount.toLocaleString()}
           </div>
           <div className="mt-0.5 text-[10px] text-neutral-400 truncate">
@@ -299,14 +299,14 @@ export const MappingReviewTable: React.FC = () => {
             setStatusFilter(statusFilter === 'unmapped' ? 'all' : 'unmapped');
             setCurrentPage(1);
           }}
-          className={`rounded-lg border p-3 sm:p-4 text-left transition-colors min-h-[78px] ${
+          className={`rounded-2xl border p-3 sm:p-4 text-left backdrop-blur-xl transition-all duration-200 min-h-[78px] shadow-xs ${
             statusFilter === 'unmapped'
-              ? 'border-neutral-900 dark:border-neutral-100 bg-neutral-50 dark:bg-neutral-800/60'
-              : 'border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-700'
+              ? 'border-neutral-900 dark:border-white bg-neutral-100/90 dark:bg-white/[0.12] ring-1 ring-neutral-900/10 dark:ring-white/20'
+              : 'border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 hover:border-neutral-300 dark:hover:border-white/20 hover:bg-white/90 dark:hover:bg-[#111215]/90'
           }`}
         >
           <div className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">Unmapped</div>
-          <div className="mt-0.5 sm:mt-1 text-lg sm:text-2xl font-semibold font-mono text-neutral-900 dark:text-neutral-100 truncate">
+          <div className="mt-0.5 sm:mt-1 text-lg sm:text-2xl font-semibold font-mono text-neutral-900 dark:text-white truncate">
             {metrics.unmappedCount.toLocaleString()}
           </div>
           <div className="mt-0.5 text-[10px] text-neutral-400 truncate">
@@ -320,10 +320,10 @@ export const MappingReviewTable: React.FC = () => {
             setCurrentStep(5);
             setActiveTab('issues');
           }}
-          className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-3 sm:p-4 text-left hover:border-neutral-400 dark:hover:border-neutral-700 transition-colors min-h-[78px]"
+          className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-3 sm:p-4 text-left hover:border-neutral-300 dark:hover:border-white/20 hover:bg-white/90 dark:hover:bg-[#111215]/90 transition-all duration-200 min-h-[78px] shadow-xs"
         >
           <div className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">Issues</div>
-          <div className="mt-0.5 sm:mt-1 text-lg sm:text-2xl font-semibold font-mono text-neutral-900 dark:text-neutral-100 truncate">
+          <div className="mt-0.5 sm:mt-1 text-lg sm:text-2xl font-semibold font-mono text-neutral-900 dark:text-white truncate">
             {metrics.totalIssuesCount.toLocaleString()}
           </div>
           <div className="mt-0.5 text-[10px] text-neutral-400 truncate">
@@ -345,7 +345,7 @@ export const MappingReviewTable: React.FC = () => {
               setCurrentPage(1);
             }}
             placeholder="Search URLs, paths, or match reasons..."
-            className="w-full rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 pl-9 pr-3 py-2 text-xs text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400 dark:focus:ring-neutral-600 min-h-[38px]"
+            className="w-full rounded-xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-md pl-9 pr-3 py-2 text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400 dark:focus:ring-neutral-500 min-h-[38px] shadow-xs"
           />
         </div>
 
@@ -360,7 +360,7 @@ export const MappingReviewTable: React.FC = () => {
                   setStatusFilter(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-1.5 text-xs text-neutral-800 dark:text-neutral-200 focus:outline-none min-h-[36px]"
+                className="w-full rounded-xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-md px-3 py-1.5 text-xs text-neutral-800 dark:text-neutral-200 focus:outline-none min-h-[36px] shadow-xs"
                 aria-label="Filter by status"
               >
                 <option value="all">All statuses ({mappings.length})</option>
@@ -388,7 +388,7 @@ export const MappingReviewTable: React.FC = () => {
                     setSortDirection(d);
                   }
                 }}
-                className="w-full rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-2.5 py-1.5 text-xs text-neutral-800 dark:text-neutral-200 focus:outline-none min-h-[36px]"
+                className="w-full rounded-xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-md px-2.5 py-1.5 text-xs text-neutral-800 dark:text-neutral-200 focus:outline-none min-h-[36px] shadow-xs"
                 aria-label="Sort mappings"
               >
                 <option value="none-asc">Default sort</option>
@@ -629,11 +629,11 @@ export const MappingReviewTable: React.FC = () => {
       </div>
 
       {/* DESKTOP TABLE (>= 768px) - Professional Workspace Table */}
-      <div className="hidden md:block rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 overflow-hidden shadow-xs">
+      <div className="hidden md:block rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50/70 dark:bg-neutral-950/60 text-[11px] text-neutral-500 dark:text-neutral-400 uppercase tracking-wider font-semibold">
+              <tr className="border-b border-neutral-200/80 dark:border-white/[0.06] bg-neutral-50/50 dark:bg-[#0c0d10]/50 backdrop-blur-md text-[11px] text-neutral-500 dark:text-neutral-400 uppercase tracking-wider font-semibold">
                 <th className="py-2.5 px-3 w-8">
                   <input
                     type="checkbox"
@@ -871,12 +871,12 @@ export const MappingReviewTable: React.FC = () => {
         </div>
       </div>
 
-      {/* EDIT DESTINATION MODAL (Requirement #16) */}
+      {/* EDIT DESTINATION MODAL */}
       {editingMapping && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto">
-          <div className="w-full max-w-lg rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 sm:p-5 shadow-xl space-y-3.5 max-h-[92vh] flex flex-col my-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-150">
+          <div className="w-full max-w-lg rounded-2xl border border-neutral-200/80 dark:border-white/[0.1] bg-white/95 dark:bg-[#111215]/95 backdrop-blur-2xl p-4 sm:p-5 shadow-2xl space-y-3.5 max-h-[92vh] flex flex-col my-auto">
             {/* Modal Header */}
-            <div className="flex items-start justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3 shrink-0">
+            <div className="flex items-start justify-between border-b border-neutral-200/80 dark:border-white/[0.08] pb-3 shrink-0">
               <div>
                 <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
                   Edit mapping

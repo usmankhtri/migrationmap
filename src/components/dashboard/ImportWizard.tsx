@@ -1,9 +1,9 @@
 /**
- * MigrationMap - User-Friendly URL Import Experience
+ * MigrationMap v1.2 - User-Friendly URL Import Experience
  * Step 1: Import Old URLs (existing website)
  * Step 2: Import New URLs (new website)
- * Provides drag-and-drop, file browser, direct paste, format hints,
- * friendly validation summaries, and guided next-action prompts.
+ * Linear/Vercel dark-first minimalist aesthetic with drag-and-drop, direct paste,
+ * column detection modal, invalid row inspection, and demo loader.
  */
 
 import React, { useState, useRef } from 'react';
@@ -12,11 +12,10 @@ import {
   CheckCircle2,
   AlertCircle,
   FileText,
-  ClipboardList,
   ArrowRight,
   X,
   Download,
-  RotateCcw,
+  Sparkles,
 } from 'lucide-react';
 import { useMigration } from '../../context/MigrationContext';
 import {
@@ -27,6 +26,37 @@ import {
   parseCsvRaw,
   detectUrlColumns,
 } from '../../utils/parsers';
+import { normalizeUrl, DEFAULT_NORMALIZATION_CONFIG } from '../../utils/url';
+
+const DEMO_OLD_URLS = [
+  'https://oldsite.com/',
+  'https://oldsite.com/about-us',
+  'https://oldsite.com/contact-us',
+  'https://oldsite.com/blog/2023/seo-migration-guide',
+  'https://oldsite.com/blog/2023/migrating-wordpress-to-nextjs',
+  'https://oldsite.com/products/classic-leather-wallet',
+  'https://oldsite.com/products/canvas-weekender-bag',
+  'https://oldsite.com/products/polarized-sunglasses',
+  'https://oldsite.com/categories/accessories',
+  'https://oldsite.com/pricing',
+  'https://oldsite.com/faq',
+  'https://oldsite.com/terms-and-conditions',
+];
+
+const DEMO_NEW_URLS = [
+  'https://newsite.com/',
+  'https://newsite.com/about',
+  'https://newsite.com/contact',
+  'https://newsite.com/posts/seo-migration-guide',
+  'https://newsite.com/posts/migrating-wordpress-to-nextjs',
+  'https://newsite.com/shop/classic-leather-wallet',
+  'https://newsite.com/shop/canvas-weekender-bag',
+  'https://newsite.com/shop/polarized-sunglasses',
+  'https://newsite.com/shop/accessories',
+  'https://newsite.com/pricing',
+  'https://newsite.com/support/faq',
+  'https://newsite.com/legal/terms',
+];
 
 export const ImportWizard: React.FC = () => {
   const {
@@ -41,6 +71,8 @@ export const ImportWizard: React.FC = () => {
     normalizationConfig,
     oldInvalidRows,
     newInvalidRows,
+    startMigration,
+    setCurrentStep,
   } = useMigration();
 
   // Mode toggles for each side: 'upload' | 'paste'
@@ -117,6 +149,14 @@ export const ImportWizard: React.FC = () => {
     reader.readAsText(file);
   };
 
+  const handleLoadDemoDataset = () => {
+    const parsedOld = DEMO_OLD_URLS.map(u => normalizeUrl(u, DEFAULT_NORMALIZATION_CONFIG));
+    const parsedNew = DEMO_NEW_URLS.map(u => normalizeUrl(u, DEFAULT_NORMALIZATION_CONFIG));
+    importBothUrls(parsedOld, parsedNew);
+    startMigration();
+    setCurrentStep(3);
+  };
+
   const confirmColumnSelection = () => {
     const result = parseCsv(
       columnPickerState.rawCsv,
@@ -138,7 +178,6 @@ export const ImportWizard: React.FC = () => {
   const handleImportBothColumns = () => {
     const cols = columnPickerState.columns;
     if (cols.length < 2) return;
-    // Determine which is old and which is new
     const oldCol = cols.find(c => c.name.toLowerCase().includes('old') || c.name.toLowerCase().includes('source') || c.name.toLowerCase().includes('from')) || cols[0];
     const newCol = cols.find(c => c.index !== oldCol.index && (c.name.toLowerCase().includes('new') || c.name.toLowerCase().includes('target') || c.name.toLowerCase().includes('dest') || c.name.toLowerCase().includes('to'))) || cols.find(c => c.index !== oldCol.index) || cols[1];
 
@@ -193,30 +232,39 @@ export const ImportWizard: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Screen Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="space-y-1">
-          <h2 className="text-sm sm:text-base font-semibold text-neutral-900 dark:text-neutral-100">
-            Import URLs
+          <h2 className="text-sm sm:text-base font-semibold text-neutral-900 dark:text-white">
+            Import Datasets
           </h2>
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
-            Add the old and new URLs for this migration. High-capacity engine supports 50,000+ URLs.
+            Upload or paste the old legacy URLs and new destination URLs for your migration.
           </p>
         </div>
-        <div className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-full border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 px-2.5 py-1 text-[11px] text-neutral-600 dark:text-neutral-400">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-          <span>High-capacity engine: 50,000+ URLs supported</span>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={handleLoadDemoDataset}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 dark:border-white/10 bg-white dark:bg-[#111215] px-3 py-1.5 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-white/[0.04] transition-colors shadow-xs"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-neutral-400" />
+            <span>Load demo dataset</span>
+          </button>
+          <div className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200/80 dark:border-white/[0.08] bg-neutral-50 dark:bg-[#111215] px-2.5 py-1.5 text-[11px] text-neutral-600 dark:text-neutral-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+            <span>Capacity: 50,000+ URLs</span>
+          </div>
         </div>
       </div>
 
       {/* Two Clear Sections: OLD URLS and NEW URLS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {/* OLD URLS SECTION */}
-        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 sm:p-5 space-y-4">
+        <div className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-4 sm:p-5 space-y-4 shadow-xs">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[11px] font-semibold text-neutral-400">STEP 1</span>
-                <h3 className="text-xs font-semibold text-neutral-900 dark:text-neutral-100 uppercase tracking-wider">
+                <h3 className="text-xs font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
                   Old URLs
                 </h3>
               </div>
@@ -235,26 +283,27 @@ export const ImportWizard: React.FC = () => {
 
           {/* If already loaded, show clean summary with replace option */}
           {oldUrls.length > 0 ? (
-            <div className="space-y-3 pt-2">
-              <div className="rounded border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 p-3 sm:p-3.5 space-y-2">
+            <div className="space-y-3 pt-1">
+              <div className="rounded-lg border border-neutral-200/80 dark:border-white/[0.06] bg-neutral-50/70 dark:bg-[#0c0d10] p-3.5 space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-neutral-500 dark:text-neutral-400">Status</span>
-                  <span className="font-medium text-neutral-900 dark:text-neutral-100">
-                    {oldUrls.length.toLocaleString()} old URLs imported
+                  <span className="text-neutral-500 dark:text-neutral-400">Dataset status</span>
+                  <span className="font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
+                    {oldUrls.length.toLocaleString()} valid URLs imported
                   </span>
                 </div>
-                <div className="text-[11px] text-neutral-500 dark:text-neutral-400 font-mono truncate">
+                <div className="text-[11px] text-neutral-500 dark:text-neutral-400 font-mono truncate pt-0.5">
                   Sample: {oldUrls[0]?.raw}
                 </div>
               </div>
 
               {/* Validation notes if invalid rows found */}
               {oldInvalidRows.length > 0 && (
-                <div className="rounded border border-amber-200 dark:border-amber-900/40 bg-amber-50/50 dark:bg-amber-950/20 p-3 text-xs space-y-1.5">
+                <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-3 text-xs space-y-1.5">
                   <div className="flex items-start gap-2 text-amber-800 dark:text-amber-300">
                     <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                     <span>
-                      Some rows don&apos;t contain valid URLs ({oldInvalidRows.length.toLocaleString()} rows).
+                      {oldInvalidRows.length.toLocaleString()} row{oldInvalidRows.length > 1 ? 's' : ''} skipped due to invalid URL format.
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 sm:gap-3 pl-6">
@@ -266,7 +315,7 @@ export const ImportWizard: React.FC = () => {
                     </button>
                     <span className="text-[11px] text-neutral-400 hidden sm:inline">&bull;</span>
                     <span className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                      Continuing with valid URLs
+                      Processing with valid URLs only
                     </span>
                   </div>
                 </div>
@@ -274,10 +323,8 @@ export const ImportWizard: React.FC = () => {
 
               <div className="flex flex-wrap items-center gap-2 pt-1">
                 <button
-                  onClick={() => {
-                    fileInputRefOld.current?.click();
-                  }}
-                  className="flex-1 sm:flex-initial rounded border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3.5 py-2 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors min-h-[38px]"
+                  onClick={() => fileInputRefOld.current?.click()}
+                  className="flex-1 sm:flex-initial rounded-lg border border-neutral-200 dark:border-white/10 bg-white dark:bg-[#111215] px-3.5 py-2 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-white/[0.04] transition-colors min-h-[38px]"
                 >
                   Replace file
                 </button>
@@ -293,33 +340,33 @@ export const ImportWizard: React.FC = () => {
                 />
                 <button
                   onClick={() => downloadBlankTemplate('old')}
-                  className="flex-1 sm:flex-initial rounded border border-neutral-200 dark:border-neutral-800 px-3.5 py-2 text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white min-h-[38px]"
+                  className="flex-1 sm:flex-initial rounded-lg border border-neutral-200 dark:border-white/10 px-3.5 py-2 text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white min-h-[38px]"
                 >
-                  Download CSV template
+                  Download template CSV
                 </button>
               </div>
             </div>
           ) : (
             /* Upload & Paste inputs when empty */
             <div className="space-y-3">
-              {/* Mode switch */}
-              <div className="flex border-b border-neutral-200 dark:border-neutral-800 text-xs">
+              {/* Segmented Mode Switch */}
+              <div className="inline-flex p-1 rounded-lg bg-neutral-100 dark:bg-white/[0.04] border border-neutral-200/60 dark:border-white/[0.06] text-xs">
                 <button
                   onClick={() => setOldMode('upload')}
-                  className={`pb-2.5 px-3.5 font-medium transition-colors border-b-2 -mb-px min-h-[38px] ${
+                  className={`py-1.5 px-3.5 font-medium rounded-md transition-all ${
                     oldMode === 'upload'
-                      ? 'border-neutral-900 dark:border-neutral-100 text-neutral-900 dark:text-neutral-100'
-                      : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200'
+                      ? 'bg-white dark:bg-[#18191e] text-neutral-900 dark:text-white shadow-xs'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
                   }`}
                 >
                   Upload file
                 </button>
                 <button
                   onClick={() => setOldMode('paste')}
-                  className={`pb-2.5 px-3.5 font-medium transition-colors border-b-2 -mb-px min-h-[38px] ${
+                  className={`py-1.5 px-3.5 font-medium rounded-md transition-all ${
                     oldMode === 'paste'
-                      ? 'border-neutral-900 dark:border-neutral-100 text-neutral-900 dark:text-neutral-100'
-                      : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200'
+                      ? 'bg-white dark:bg-[#18191e] text-neutral-900 dark:text-white shadow-xs'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
                   }`}
                 >
                   Paste URLs
@@ -339,27 +386,27 @@ export const ImportWizard: React.FC = () => {
                     const file = e.dataTransfer.files?.[0];
                     if (file) handleFileUpload(file, 'old');
                   }}
-                  className={`border-2 border-dashed rounded-lg p-5 sm:p-6 text-center transition-colors ${
+                  className={`border border-dashed rounded-xl p-6 sm:p-7 text-center transition-all ${
                     dragActiveOld
-                      ? 'border-neutral-900 dark:border-neutral-100 bg-neutral-100/50 dark:bg-neutral-800/40'
-                      : 'border-neutral-200 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-600 bg-neutral-50/50 dark:bg-neutral-950/50'
+                      ? 'border-neutral-900 dark:border-white/40 bg-neutral-100/60 dark:bg-white/[0.04]'
+                      : 'border-neutral-300 dark:border-white/[0.12] hover:border-neutral-400 dark:hover:border-white/20 bg-neutral-50/50 dark:bg-[#0c0d10]'
                   }`}
                 >
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300">
+                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-200 dark:border-white/10 bg-white dark:bg-[#131418] text-neutral-700 dark:text-neutral-300 shadow-xs">
                     <Upload className="h-4 w-4" />
                   </div>
-                  <p className="mt-3 text-xs font-medium text-neutral-900 dark:text-neutral-100">
-                    Drag and drop file here, or choose file
+                  <p className="mt-3 text-xs font-medium text-neutral-900 dark:text-white">
+                    Drag and drop file here, or browse files
                   </p>
                   <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400">
-                    Supports CSV, TSV, TXT, or sitemap.xml
+                    Supports CSV, TSV, TXT, or sitemap.xml (up to 50,000+ URLs)
                   </p>
                   <div className="mt-4">
                     <button
                       onClick={() => fileInputRefOld.current?.click()}
-                      className="rounded-md bg-neutral-900 dark:bg-neutral-100 px-4 py-2 text-xs font-semibold text-white dark:text-neutral-900 hover:opacity-90 transition-opacity min-h-[40px]"
+                      className="rounded-lg bg-neutral-900 dark:bg-white px-4 py-2 text-xs font-semibold text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors shadow-xs min-h-[38px]"
                     >
-                      Choose file
+                      Browse file
                     </button>
                     <input
                       ref={fileInputRefOld}
@@ -380,7 +427,7 @@ export const ImportWizard: React.FC = () => {
                     onChange={e => setPasteOldText(e.target.value)}
                     rows={6}
                     placeholder="https://example.com/about&#10;https://example.com/products/item-1&#10;https://example.com/contact"
-                    className="w-full rounded border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 p-2.5 font-mono text-xs text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400 dark:focus:ring-neutral-600"
+                    className="w-full rounded-lg border border-neutral-200/80 dark:border-white/[0.08] bg-neutral-50 dark:bg-[#0c0d10] p-3 font-mono text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:border-neutral-400 dark:focus:border-white/20"
                   />
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <span className="text-[11px] text-neutral-500 dark:text-neutral-400">
@@ -389,7 +436,7 @@ export const ImportWizard: React.FC = () => {
                     <button
                       onClick={() => handlePasteSubmit('old')}
                       disabled={!pasteOldText.trim()}
-                      className="w-full sm:w-auto rounded-md bg-neutral-900 dark:bg-neutral-100 px-4 py-2 text-xs font-medium text-white dark:text-neutral-900 hover:opacity-90 transition-opacity disabled:opacity-40 min-h-[38px]"
+                      className="w-full sm:w-auto rounded-lg bg-neutral-900 dark:bg-white px-4 py-2 text-xs font-semibold text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors disabled:opacity-40 min-h-[38px] shadow-xs"
                     >
                       Load pasted URLs
                     </button>
@@ -397,13 +444,13 @@ export const ImportWizard: React.FC = () => {
                 </div>
               )}
 
-              <div className="pt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-neutral-500 dark:text-neutral-400">
-                <span>Need a sample header format?</span>
+              <div className="pt-1 flex flex-wrap items-center justify-between gap-2 text-[11px] text-neutral-500 dark:text-neutral-400">
+                <span>Need a sample file header?</span>
                 <button
                   onClick={() => downloadBlankTemplate('old')}
-                  className="inline-flex items-center gap-1 underline hover:text-neutral-800 dark:hover:text-neutral-200 py-1"
+                  className="inline-flex items-center gap-1 underline hover:text-neutral-900 dark:hover:text-white py-1"
                 >
-                  <Download className="h-3 w-3" /> Blank CSV template
+                  <Download className="h-3 w-3" /> Blank template
                 </button>
               </div>
             </div>
@@ -411,12 +458,12 @@ export const ImportWizard: React.FC = () => {
         </div>
 
         {/* NEW URLS SECTION */}
-        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 sm:p-5 space-y-4">
+        <div className="rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/70 dark:bg-[#111215]/75 backdrop-blur-xl p-4 sm:p-5 space-y-4 shadow-xs">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[11px] font-semibold text-neutral-400">STEP 2</span>
-                <h3 className="text-xs font-semibold text-neutral-900 dark:text-neutral-100 uppercase tracking-wider">
+                <h3 className="text-xs font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
                   New URLs
                 </h3>
               </div>
@@ -426,7 +473,7 @@ export const ImportWizard: React.FC = () => {
             </div>
 
             {newUrls.length > 0 && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 {newUrls.length.toLocaleString()} new URLs imported
               </span>
@@ -435,26 +482,27 @@ export const ImportWizard: React.FC = () => {
 
           {/* If already loaded, show clean summary with replace option */}
           {newUrls.length > 0 ? (
-            <div className="space-y-3 pt-2">
-              <div className="rounded border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 p-3.5 space-y-2">
+            <div className="space-y-3 pt-1">
+              <div className="rounded-lg border border-neutral-200/80 dark:border-white/[0.06] bg-neutral-50/70 dark:bg-[#0c0d10] p-3.5 space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-neutral-500 dark:text-neutral-400">Status</span>
-                  <span className="font-medium text-neutral-900 dark:text-neutral-100">
-                    {newUrls.length.toLocaleString()} new URLs imported
+                  <span className="text-neutral-500 dark:text-neutral-400">Dataset status</span>
+                  <span className="font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
+                    {newUrls.length.toLocaleString()} valid destinations imported
                   </span>
                 </div>
-                <div className="text-[11px] text-neutral-500 dark:text-neutral-400 font-mono truncate">
+                <div className="text-[11px] text-neutral-500 dark:text-neutral-400 font-mono truncate pt-0.5">
                   Sample: {newUrls[0]?.raw}
                 </div>
               </div>
 
               {/* Validation notes if invalid rows found */}
               {newInvalidRows.length > 0 && (
-                <div className="rounded border border-amber-200 dark:border-amber-900/40 bg-amber-50/50 dark:bg-amber-950/20 p-3 text-xs space-y-1.5">
+                <div className="rounded-lg border border-amber-500/20 bg-amber-500/10 p-3 text-xs space-y-1.5">
                   <div className="flex items-start gap-2 text-amber-800 dark:text-amber-300">
                     <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                     <span>
-                      Some rows don&apos;t contain valid URLs ({newInvalidRows.length.toLocaleString()} rows).
+                      {newInvalidRows.length.toLocaleString()} row{newInvalidRows.length > 1 ? 's' : ''} skipped due to invalid URL format.
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 sm:gap-3 pl-6">
@@ -466,7 +514,7 @@ export const ImportWizard: React.FC = () => {
                     </button>
                     <span className="text-[11px] text-neutral-400 hidden sm:inline">&bull;</span>
                     <span className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                      Continuing with valid URLs
+                      Processing with valid URLs only
                     </span>
                   </div>
                 </div>
@@ -475,7 +523,7 @@ export const ImportWizard: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2 pt-1">
                 <button
                   onClick={() => fileInputRefNew.current?.click()}
-                  className="flex-1 sm:flex-initial rounded border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3.5 py-2 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors min-h-[38px]"
+                  className="flex-1 sm:flex-initial rounded-lg border border-neutral-200 dark:border-white/10 bg-white dark:bg-[#111215] px-3.5 py-2 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-white/[0.04] transition-colors min-h-[38px]"
                 >
                   Replace file
                 </button>
@@ -491,33 +539,33 @@ export const ImportWizard: React.FC = () => {
                 />
                 <button
                   onClick={() => downloadBlankTemplate('new')}
-                  className="flex-1 sm:flex-initial rounded border border-neutral-200 dark:border-neutral-800 px-3.5 py-2 text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white min-h-[38px]"
+                  className="flex-1 sm:flex-initial rounded-lg border border-neutral-200 dark:border-white/10 px-3.5 py-2 text-xs text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white min-h-[38px]"
                 >
-                  Download CSV template
+                  Download template CSV
                 </button>
               </div>
             </div>
           ) : (
             /* Upload & Paste inputs when empty */
             <div className="space-y-3">
-              {/* Mode switch */}
-              <div className="flex border-b border-neutral-200 dark:border-neutral-800 text-xs">
+              {/* Segmented Mode Switch */}
+              <div className="inline-flex p-1 rounded-lg bg-neutral-100 dark:bg-white/[0.04] border border-neutral-200/60 dark:border-white/[0.06] text-xs">
                 <button
                   onClick={() => setNewMode('upload')}
-                  className={`pb-2.5 px-3.5 font-medium transition-colors border-b-2 -mb-px min-h-[38px] ${
+                  className={`py-1.5 px-3.5 font-medium rounded-md transition-all ${
                     newMode === 'upload'
-                      ? 'border-neutral-900 dark:border-neutral-100 text-neutral-900 dark:text-neutral-100'
-                      : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200'
+                      ? 'bg-white dark:bg-[#18191e] text-neutral-900 dark:text-white shadow-xs'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
                   }`}
                 >
                   Upload file
                 </button>
                 <button
                   onClick={() => setNewMode('paste')}
-                  className={`pb-2.5 px-3.5 font-medium transition-colors border-b-2 -mb-px min-h-[38px] ${
+                  className={`py-1.5 px-3.5 font-medium rounded-md transition-all ${
                     newMode === 'paste'
-                      ? 'border-neutral-900 dark:border-neutral-100 text-neutral-900 dark:text-neutral-100'
-                      : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200'
+                      ? 'bg-white dark:bg-[#18191e] text-neutral-900 dark:text-white shadow-xs'
+                      : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white'
                   }`}
                 >
                   Paste URLs
@@ -537,27 +585,27 @@ export const ImportWizard: React.FC = () => {
                     const file = e.dataTransfer.files?.[0];
                     if (file) handleFileUpload(file, 'new');
                   }}
-                  className={`border-2 border-dashed rounded-lg p-5 sm:p-6 text-center transition-colors ${
+                  className={`border border-dashed rounded-xl p-6 sm:p-7 text-center transition-all ${
                     dragActiveNew
-                      ? 'border-neutral-900 dark:border-neutral-100 bg-neutral-100/50 dark:bg-neutral-800/40'
-                      : 'border-neutral-200 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-600 bg-neutral-50/50 dark:bg-neutral-950/50'
+                      ? 'border-neutral-900 dark:border-white/40 bg-neutral-100/60 dark:bg-white/[0.04]'
+                      : 'border-neutral-300 dark:border-white/[0.12] hover:border-neutral-400 dark:hover:border-white/20 bg-neutral-50/50 dark:bg-[#0c0d10]'
                   }`}
                 >
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300">
+                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-200 dark:border-white/10 bg-white dark:bg-[#131418] text-neutral-700 dark:text-neutral-300 shadow-xs">
                     <Upload className="h-4 w-4" />
                   </div>
-                  <p className="mt-3 text-xs font-medium text-neutral-900 dark:text-neutral-100">
-                    Drag and drop file here, or choose file
+                  <p className="mt-3 text-xs font-medium text-neutral-900 dark:text-white">
+                    Drag and drop file here, or browse files
                   </p>
                   <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400">
-                    Supports CSV, TSV, TXT, or sitemap.xml
+                    Supports CSV, TSV, TXT, or sitemap.xml (up to 50,000+ URLs)
                   </p>
                   <div className="mt-4">
                     <button
                       onClick={() => fileInputRefNew.current?.click()}
-                      className="rounded-md bg-neutral-900 dark:bg-neutral-100 px-4 py-2 text-xs font-semibold text-white dark:text-neutral-900 hover:opacity-90 transition-opacity min-h-[40px]"
+                      className="rounded-lg bg-neutral-900 dark:bg-white px-4 py-2 text-xs font-semibold text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors shadow-xs min-h-[38px]"
                     >
-                      Choose file
+                      Browse file
                     </button>
                     <input
                       ref={fileInputRefNew}
@@ -578,7 +626,7 @@ export const ImportWizard: React.FC = () => {
                     onChange={e => setPasteNewText(e.target.value)}
                     rows={6}
                     placeholder="https://new-site.com/about&#10;https://new-site.com/shop/item-1&#10;https://new-site.com/contact"
-                    className="w-full rounded border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 p-2.5 font-mono text-xs text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400 dark:focus:ring-neutral-600"
+                    className="w-full rounded-lg border border-neutral-200/80 dark:border-white/[0.08] bg-neutral-50 dark:bg-[#0c0d10] p-3 font-mono text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:border-neutral-400 dark:focus:border-white/20"
                   />
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <span className="text-[11px] text-neutral-500 dark:text-neutral-400">
@@ -587,7 +635,7 @@ export const ImportWizard: React.FC = () => {
                     <button
                       onClick={() => handlePasteSubmit('new')}
                       disabled={!pasteNewText.trim()}
-                      className="w-full sm:w-auto rounded-md bg-neutral-900 dark:bg-neutral-100 px-4 py-2 text-xs font-medium text-white dark:text-neutral-900 hover:opacity-90 transition-opacity disabled:opacity-40 min-h-[38px]"
+                      className="w-full sm:w-auto rounded-lg bg-neutral-900 dark:bg-white px-4 py-2 text-xs font-semibold text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors disabled:opacity-40 min-h-[38px] shadow-xs"
                     >
                       Load pasted URLs
                     </button>
@@ -595,13 +643,13 @@ export const ImportWizard: React.FC = () => {
                 </div>
               )}
 
-              <div className="pt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-neutral-500 dark:text-neutral-400">
-                <span>Need a sample header format?</span>
+              <div className="pt-1 flex flex-wrap items-center justify-between gap-2 text-[11px] text-neutral-500 dark:text-neutral-400">
+                <span>Need a sample file header?</span>
                 <button
                   onClick={() => downloadBlankTemplate('new')}
-                  className="inline-flex items-center gap-1 underline hover:text-neutral-800 dark:hover:text-neutral-200 py-1"
+                  className="inline-flex items-center gap-1 underline hover:text-neutral-900 dark:hover:text-white py-1"
                 >
-                  <Download className="h-3 w-3" /> Blank CSV template
+                  <Download className="h-3 w-3" /> Blank template
                 </button>
               </div>
             </div>
@@ -610,31 +658,31 @@ export const ImportWizard: React.FC = () => {
       </div>
 
       {/* STEP 3 & NEXT ACTION GUIDANCE BANNER */}
-      <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 sm:p-5">
+      <div className="rounded-xl border border-neutral-200/80 dark:border-white/[0.08] bg-white dark:bg-[#111215] p-5 shadow-xs">
         {bothLoaded ? (
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[11px] font-semibold text-neutral-400">STEP 3</span>
-                <h3 className="text-xs sm:text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-                  Ready to match URLs
+                <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">
+                  Datasets ready for matching
                 </h3>
               </div>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
                 Both datasets are loaded ({oldUrls.length.toLocaleString()} old &bull; {newUrls.length.toLocaleString()} new).
-                Run deterministic heuristics to match paths, slugs, and tokens.
+                Deterministic matching will pair paths, detect redirects, and check for loops.
               </p>
             </div>
 
             <button
               onClick={runAnalysis}
               disabled={isAnalyzing}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md bg-neutral-900 dark:bg-neutral-100 px-4 py-2.5 text-xs font-semibold text-white dark:text-neutral-900 hover:opacity-90 transition-opacity disabled:opacity-50 shrink-0 min-h-[40px]"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-900 dark:bg-white px-5 py-2.5 text-xs font-semibold text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors disabled:opacity-50 shrink-0 min-h-[42px] shadow-xs"
             >
               {isAnalyzing ? (
                 <>
                   <span className="h-3 w-3 border-2 border-white dark:border-neutral-900 border-t-transparent rounded-full animate-spin" />
-                  <span>{progress?.stage || 'Running matching...'}</span>
+                  <span>{progress?.stage || 'Running matching engine...'}</span>
                 </>
               ) : (
                 <>
@@ -645,41 +693,41 @@ export const ImportWizard: React.FC = () => {
             </button>
           </div>
         ) : oldUrls.length > 0 ? (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-neutral-600 dark:text-neutral-400">
-            <span>Add your new URL list to continue.</span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+            <span>Add your new destination URLs above to enable matching.</span>
             <span className="font-mono text-[11px] text-neutral-400">1 of 2 datasets loaded</span>
           </div>
         ) : newUrls.length > 0 ? (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-neutral-600 dark:text-neutral-400">
-            <span>Add your old URL list to continue.</span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+            <span>Add your legacy source URLs above to enable matching.</span>
             <span className="font-mono text-[11px] text-neutral-400">1 of 2 datasets loaded</span>
           </div>
         ) : (
           <div className="text-xs text-neutral-500 dark:text-neutral-400 text-center sm:text-left">
-            Import your old and new URL lists above to begin matching.
+            Import your old and new URL lists above or click &ldquo;Load demo dataset&rdquo; to test immediately.
           </div>
         )}
       </div>
 
       {/* COLUMN PICKER MODAL (When multiple URL columns found in CSV) */}
       {columnPickerState.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto">
-          <div className="w-full max-w-md rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 sm:p-5 shadow-xl space-y-4 max-h-[90vh] flex flex-col my-auto">
-            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3 shrink-0">
-              <h3 className="text-xs font-semibold text-neutral-900 dark:text-neutral-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-3 sm:p-4 overflow-y-auto">
+          <div className="w-full max-w-md rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/95 dark:bg-[#111215]/95 backdrop-blur-2xl p-5 shadow-2xl space-y-4 max-h-[90vh] flex flex-col my-auto">
+            <div className="flex items-center justify-between border-b border-neutral-100 dark:border-white/[0.06] pb-3 shrink-0">
+              <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">
                 Select URL column
               </h3>
               <button
                 onClick={() => setColumnPickerState(prev => ({ ...prev, isOpen: false }))}
-                className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 p-1"
+                className="text-neutral-400 hover:text-neutral-600 dark:hover:text-white p-1"
                 aria-label="Close dialog"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <p className="text-xs text-neutral-500 dark:text-neutral-400">
-              Multiple columns in <code className="font-mono text-[11px]">{columnPickerState.filename}</code> look like URLs.
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
+              Multiple columns in <code className="font-mono text-[11px] text-neutral-800 dark:text-neutral-200">{columnPickerState.filename}</code> look like URLs.
               Which column contains the URLs you want to map?
             </p>
 
@@ -687,48 +735,48 @@ export const ImportWizard: React.FC = () => {
               {columnPickerState.columns.map(col => (
                 <label
                   key={col.index}
-                  className={`flex items-center justify-between rounded border p-2.5 text-xs cursor-pointer transition-colors min-h-[40px] ${
+                  className={`flex items-center justify-between rounded-lg border p-2.5 text-xs cursor-pointer transition-colors min-h-[40px] ${
                     columnPickerState.selectedCol === col.index
-                      ? 'border-neutral-900 dark:border-neutral-100 bg-neutral-50 dark:bg-neutral-800 font-medium'
-                      : 'border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/50'
+                      ? 'border-neutral-900 dark:border-white/30 bg-neutral-100/70 dark:bg-white/[0.06] font-medium'
+                      : 'border-neutral-200 dark:border-white/[0.06] hover:bg-neutral-50 dark:hover:bg-white/[0.02]'
                   }`}
                 >
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     <input
                       type="radio"
                       name="urlColumn"
                       checked={columnPickerState.selectedCol === col.index}
                       onChange={() => setColumnPickerState(prev => ({ ...prev, selectedCol: col.index }))}
-                      className="accent-neutral-900 dark:accent-neutral-100 h-4 w-4"
+                      className="accent-neutral-900 dark:accent-white h-4 w-4"
                     />
                     <span className="font-mono text-[11px] text-neutral-800 dark:text-neutral-200">
                       {col.name}
                     </span>
                   </div>
-                  <span className="text-[10px] text-neutral-400">Column #{col.index + 1}</span>
+                  <span className="text-[10px] text-neutral-400 font-mono">Col #{col.index + 1}</span>
                 </label>
               ))}
             </div>
 
-            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-2 border-t border-neutral-200 dark:border-neutral-800 shrink-0">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] shrink-0">
               {columnPickerState.columns.length >= 2 && (
                 <button
                   onClick={handleImportBothColumns}
-                  className="rounded border border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 px-3 py-2 text-xs font-semibold text-neutral-900 dark:text-neutral-100 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors min-h-[38px]"
+                  className="rounded-lg border border-neutral-200 dark:border-white/10 bg-neutral-100 dark:bg-white/[0.04] px-3.5 py-2 text-xs font-semibold text-neutral-900 dark:text-white hover:bg-neutral-200 dark:hover:bg-white/[0.08] transition-colors min-h-[38px]"
                 >
-                  Import both Old &amp; New URLs
+                  Import both Old &amp; New
                 </button>
               )}
               <div className="flex items-center justify-end gap-2 ml-auto w-full sm:w-auto">
                 <button
                   onClick={() => setColumnPickerState(prev => ({ ...prev, isOpen: false }))}
-                  className="flex-1 sm:flex-initial rounded border border-neutral-200 dark:border-neutral-800 px-3.5 py-2 text-xs text-neutral-600 dark:text-neutral-400 min-h-[38px]"
+                  className="flex-1 sm:flex-initial rounded-lg border border-neutral-200 dark:border-white/10 px-3.5 py-2 text-xs text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white min-h-[38px]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmColumnSelection}
-                  className="flex-1 sm:flex-initial rounded bg-neutral-900 dark:bg-neutral-100 px-4 py-2 text-xs font-semibold text-white dark:text-neutral-900 hover:opacity-90 min-h-[38px]"
+                  className="flex-1 sm:flex-initial rounded-lg bg-neutral-900 dark:bg-white px-4 py-2 text-xs font-semibold text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors shadow-xs min-h-[38px]"
                 >
                   Import this column
                 </button>
@@ -740,30 +788,30 @@ export const ImportWizard: React.FC = () => {
 
       {/* INVALID ROWS MODAL */}
       {invalidModalSide && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto">
-          <div className="w-full max-w-xl rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 sm:p-5 shadow-xl space-y-4 max-h-[85vh] flex flex-col my-auto">
-            <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3 shrink-0">
-              <h3 className="text-xs font-semibold text-neutral-900 dark:text-neutral-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-3 sm:p-4 overflow-y-auto">
+          <div className="w-full max-w-xl rounded-2xl border border-neutral-200/80 dark:border-white/[0.08] bg-white/95 dark:bg-[#111215]/95 backdrop-blur-2xl p-5 shadow-2xl space-y-4 max-h-[85vh] flex flex-col my-auto">
+            <div className="flex items-center justify-between border-b border-neutral-100 dark:border-white/[0.06] pb-3 shrink-0">
+              <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">
                 Invalid rows ({invalidModalSide === 'old' ? 'Old URLs' : 'New URLs'})
               </h3>
               <button
                 onClick={() => setInvalidModalSide(null)}
-                className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 p-1"
+                className="text-neutral-400 hover:text-neutral-600 dark:hover:text-white p-1"
                 aria-label="Close dialog"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <p className="text-xs text-neutral-500 dark:text-neutral-400">
-              These rows were skipped because they could not be parsed as valid absolute or relative URLs.
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
+              These rows were skipped because they could not be parsed as valid URLs or paths.
             </p>
 
             <div className="flex-1 overflow-y-auto space-y-2 pr-1">
               {(invalidModalSide === 'old' ? oldInvalidRows : newInvalidRows).map((row, idx) => (
                 <div
                   key={idx}
-                  className="rounded border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 p-2 text-xs space-y-1"
+                  className="rounded-lg border border-neutral-200/80 dark:border-white/[0.06] bg-neutral-50 dark:bg-[#0c0d10] p-2.5 text-xs space-y-1"
                 >
                   <div className="flex items-center justify-between font-mono text-[10px] text-neutral-400">
                     <span>Line {row.line}</span>
@@ -776,7 +824,7 @@ export const ImportWizard: React.FC = () => {
               ))}
             </div>
 
-            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-2 border-t border-neutral-200 dark:border-neutral-800 shrink-0">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-3 border-t border-neutral-100 dark:border-white/[0.06] shrink-0">
               <button
                 onClick={() => downloadInvalidRows(invalidModalSide)}
                 className="inline-flex items-center justify-center gap-1.5 text-xs text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white py-2 min-h-[38px]"
@@ -785,7 +833,7 @@ export const ImportWizard: React.FC = () => {
               </button>
               <button
                 onClick={() => setInvalidModalSide(null)}
-                className="rounded bg-neutral-900 dark:bg-neutral-100 px-4 py-2 text-xs font-semibold text-white dark:text-neutral-900 min-h-[38px]"
+                className="rounded-lg bg-neutral-900 dark:bg-white px-4 py-2 text-xs font-semibold text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-100 transition-colors shadow-xs min-h-[38px]"
               >
                 Continue
               </button>

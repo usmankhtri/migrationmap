@@ -2,12 +2,35 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Google Material Design 3 (M3) Palette */
 html.dark {
   color-scheme: dark;
+  background-color: #0e1014;
+  --m3-surface: #0e1014;
+  --m3-surface-container-low: #13151b;
+  --m3-surface-container: #191c22;
+  --m3-surface-container-high: #21242b;
+  --m3-surface-container-highest: #2b2e36;
+  --m3-outline: #8b919a;
+  --m3-outline-variant: rgba(255, 255, 255, 0.09);
+  --m3-primary: #8ab4f8;
+  --m3-primary-container: #173861;
+  --m3-on-primary-container: #d2e3fc;
 }
 
 html:not(.dark) {
   color-scheme: light;
+  background-color: #f7f9fd;
+  --m3-surface: #f7f9fd;
+  --m3-surface-container-low: #ffffff;
+  --m3-surface-container: #edf1f7;
+  --m3-surface-container-high: #e2e7ef;
+  --m3-surface-container-highest: #d7dde6;
+  --m3-outline: #72777f;
+  --m3-outline-variant: rgba(0, 0, 0, 0.08);
+  --m3-primary: #1a73e8;
+  --m3-primary-container: #d3e3fd;
+  --m3-on-primary-container: #041e49;
 }
 
 html, body {
@@ -17,27 +40,73 @@ html, body {
 }
 
 body {
-  font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  letter-spacing: -0.011em;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: -0.015em;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 code, pre, kbd, .font-mono {
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Minimal subtle scrollbars */
+/* Material Design 3 Elevation Shadows */
+.m3-elevation-1 {
+  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.08), 0px 1px 2px 0px rgba(0, 0, 0, 0.12);
+}
+
+.m3-elevation-2 {
+  box-shadow: 0px 2px 6px 2px rgba(0, 0, 0, 0.1), 0px 1px 2px 0px rgba(0, 0, 0, 0.14);
+}
+
+.m3-elevation-3 {
+  box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.12), 0px 1px 3px 0px rgba(0, 0, 0, 0.18);
+}
+
+/* Glassmorphism & Frosted Primitives */
+.glass-panel {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-pill {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Minimal sleek scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(160, 160, 160, 0.25);
+  background: rgba(140, 140, 150, 0.22);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(160, 160, 160, 0.45);
+  background: rgba(140, 140, 150, 0.4);
+}
+
+/* Accessible focus visible defaults (M3 3px ring) */
+*:focus-visible {
+  outline: 2px solid #1a73e8;
+  outline-offset: 2px;
+}
+.dark *:focus-visible {
+  outline: 2px solid #8ab4f8;
+  outline-offset: 2px;
+}
+
+/* Smooth reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
